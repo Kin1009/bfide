@@ -275,6 +275,8 @@ win.protocol("WM_DELETE_WINDOW", exit_)
 if len(sys.argv) > 1:
     f_ = open(sys.argv[1], "r")
     codeinp.insert(INSERT, f_.read())
+    code_ = f_.read()
+    win.title("Brainfuck IDE: " + sys.argv[1])
     f_.close()
     saved = 1
     fpath = sys.argv[1]
