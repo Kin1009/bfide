@@ -280,6 +280,7 @@ if len(sys.argv) > 1:
     f_.close()
     saved = 1
     fpath = sys.argv[1]
+    save()
 win.deiconify()
 win.after(10, check)
 win.mainloop()
