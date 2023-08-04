@@ -1,15 +1,19 @@
 from sys import exit as exit__, argv
+import sys
 from pathlib import Path
 from tkinter import END, INSERT, IntVar, Menu, Tk, Toplevel
 from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Label, Radiobutton, Button
 from tkinter.filedialog import asksaveasfile as filesave, askopenfile
-from os.path import exists
+from os.path import exists, dirname, abspath
 from tkinter.messagebox import askyesno
 win=Tk()
 win.withdraw()
-win.title("Brainfuck IDE")
-script = str(Path(__file__).parent.resolve())
+win.title("Brainfuck IDE Portable")
+if getattr(sys, "frozen", False):
+    script = sys._MEIPASS
+else:
+    script = dirname(abspath(__file__))
 if not script.endswith("\\"):
     script += "\\"
 win.iconbitmap(script + "icon.ico")
@@ -51,7 +55,7 @@ def new(a=None):
     saved = 0
     clear()
     codeinp.delete("1.0", END)
-    win.title("Brainfuck IDE")
+    win.title("Brainfuck IDE Portable")
     code_ = "\n"
     check()
 def save(a=None):
@@ -60,7 +64,7 @@ def save(a=None):
     global code_
     if saved == 0:
         if a is None:
-            if askyesno("Brainfuck IDE", "Do you want to save the file?"):
+            if askyesno("Brainfuck IDE Portable", "Do you want to save the file?"):
                 temp = filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
                 if temp is not None:
                     f = open(temp.name, "w")
@@ -68,7 +72,7 @@ def save(a=None):
                     f.write(codeinp.get("1.0", END)[:-1])
                     f.close()
                     saved = 1
-                    win.title("Brainfuck IDE: " + fpath)
+                    win.title("Brainfuck IDE Portable: " + fpath)
         else:
             temp = filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
             if temp is not None:
@@ -77,13 +81,13 @@ def save(a=None):
                 f.write(codeinp.get("1.0", END)[:-1])
                 f.close()
                 saved = 1
-                win.title("Brainfuck IDE: " + fpath)
+                win.title("Brainfuck IDE Portable: " + fpath)
     else:
         f = open(fpath, "w")
         f.write(codeinp.get("1.0", END)[:-1])
         code_ = codeinp.get("1.0", END)
         f.close()
-        win.title("Brainfuck IDE: " + fpath)
+        win.title("Brainfuck IDE Portable: " + fpath)
     code_ = codeinp.get("1.0", END)
     check()
     return
@@ -103,7 +107,7 @@ def open_(a=None):
         f.close()
         saved = 1
     save()
-    win.title("Brainfuck IDE: " + fpath)
+    win.title("Brainfuck IDE Portable: " + fpath)
     check()
 run = 0
 def evaluate(z=None):
@@ -326,7 +330,7 @@ if len(argv) > 1:
     f_ = open(argv[1], "r")
     codeinp.insert(INSERT, f_.read())
     code_ = f_.read()
-    win.title("Brainfuck IDE: " + argv[1])
+    win.title("Brainfuck IDE Portable: " + argv[1])
     f_.close()
     saved = 1
     fpath = argv[1]
