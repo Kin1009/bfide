@@ -1,60 +1,56 @@
-from sys import exit as exit__, argv
+#C:/Program Files/Python311/python.exe
 import sys
-from pathlib import Path
-from tkinter import END, INSERT, IntVar, Menu, Tk, Toplevel
+import tkinter
 from tkinter.scrolledtext import ScrolledText
-from tkinter.ttk import Label, Radiobutton, Button
-from tkinter.filedialog import asksaveasfile as filesave, askopenfile
-from os.path import exists, dirname, abspath
-from tkinter.messagebox import askyesno
-win=Tk()
+import os
+win= tkinter.Tk()
 win.withdraw()
 win.title("Brainfuck IDE Portable")
 if getattr(sys, "frozen", False):
     script = sys._MEIPASS
 else:
-    script = dirname(abspath(__file__))
+    script = os.path.dirname(os.path.abspath(__file__))
 if not script.endswith("\\"):
     script += "\\"
 win.iconbitmap(script + "icon.ico")
 win.resizable(0, 0)
-if not exists(script + "settings.txt"):
+if not os.path.exists(script + "settings.txt"):
     with open(script + "settings.txt", "w") as f:
         f.write("10")
 def print_(text):
     output.configure(state="normal")
-    output.insert(END, text)
+    output.insert(tkinter.END, text)
     output.configure(state="disabled")
 def clear(s=None):
     output.configure(state="normal")
-    output.delete("1.0", END)
+    output.delete("1.0", tkinter.END)
     output.configure(state="disabled")
 def input():
     inp.configure(state="normal")
-    inp.delete("1.0", END)
-    while len(inp.get("1.0", END)) == 1:
+    inp.delete("1.0", tkinter.END)
+    while len(inp.get("1.0", tkinter.END)) == 1:
         win.update()
         if run == 0:
             inp.config(state="disabled")
             return
     inp.configure(state="disabled")
-    return inp.get("1.0", END)[0]
+    return inp.get("1.0", tkinter.END)[0]
 def exit_():
-    if codeinp.get("1.0", END) != "\n":
+    if codeinp.get("1.0", tkinter.END) != "\n":
         save()
     with open(script + "settings.txt", "w") as f:
         f.write(mode)
     win.destroy()
-    exit__()
+    sys.exit()
 saved = 0
 fpath = ""
 def new(a=None):
     global saved, code_
-    if codeinp.get("1.0", END) != "\n":
+    if codeinp.get("1.0", tkinter.END) != "\n":
         save()
     saved = 0
     clear()
-    codeinp.delete("1.0", END)
+    codeinp.delete("1.0", tkinter.END)
     win.title("Brainfuck IDE Portable")
     code_ = "\n"
     check()
@@ -64,44 +60,44 @@ def save(a=None):
     global code_
     if saved == 0:
         if a is None:
-            if askyesno("Brainfuck IDE Portable", "Do you want to save the file?"):
-                temp = filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
+            if tkinter.messagebox.askyesno("Brainfuck IDE Portable", "Do you want to save the file?"):
+                temp = tkinter.messagebox.filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
                 if temp is not None:
                     f = open(temp.name, "w")
                     fpath = temp.name
-                    f.write(codeinp.get("1.0", END)[:-1])
+                    f.write(codeinp.get("1.0", tkinter.END)[:-1])
                     f.close()
                     saved = 1
                     win.title("Brainfuck IDE Portable: " + fpath)
         else:
-            temp = filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
+            temp = tkinter.messagebox.filesave(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt")])
             if temp is not None:
                 f = open(temp.name, "w")
                 fpath = temp.name
-                f.write(codeinp.get("1.0", END)[:-1])
+                f.write(codeinp.get("1.0", tkinter.END)[:-1])
                 f.close()
                 saved = 1
                 win.title("Brainfuck IDE Portable: " + fpath)
     else:
         f = open(fpath, "w")
-        f.write(codeinp.get("1.0", END)[:-1])
-        code_ = codeinp.get("1.0", END)
+        f.write(codeinp.get("1.0", tkinter.END)[:-1])
+        code_ = codeinp.get("1.0", tkinter.END)
         f.close()
         win.title("Brainfuck IDE Portable: " + fpath)
-    code_ = codeinp.get("1.0", END)
+    code_ = codeinp.get("1.0", tkinter.END)
     check()
     return
 code_ = "\n"
 def open_(a=None):
     global fpath, saved, code, code_
-    if codeinp.get("1.0", END) != "\n":
+    if codeinp.get("1.0", tkinter.END) != "\n":
         save()
-    temp = askopenfile(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt"), ("All files", "*.*")])
+    temp = tkinter.messagebox.askopenfile(defaultextension='.bf', filetypes=[("Brainfuck Files", "*.bf"), ("Text files", "*.txt"), ("All files", "*.*")])
     if temp is not None:
         f = open(temp.name, "r")
         fpath = temp.name
-        codeinp.delete("1.0", END)
-        codeinp.insert(INSERT, f.read())
+        codeinp.delete("1.0", tkinter.END)
+        codeinp.insert(tkinter.INSERT, f.read())
         code = f.read()
         code_ = f.read()
         f.close()
@@ -111,10 +107,10 @@ def open_(a=None):
     check()
 run = 0
 def evaluate(z=None):
-    if codeinp.get("1.0", END) != "\n":
+    if codeinp.get("1.0", tkinter.END) != "\n":
         try:
             save()
-            code = codeinp.get("1.0", END)
+            code = codeinp.get("1.0", tkinter.END)
             global run
             run = 1
             code = cleanup(list(code))
@@ -125,7 +121,7 @@ def evaluate(z=None):
                     command = code[codeptr]
                     if command == ">":
                         cellptr += 1
-                    if cellptr == len(cells): cells.append(0)
+                    if cellptr == len(cells): cells.append.END(0)
                     if command == "<":
                         cellptr = 0 if cellptr <= 0 else cellptr - 1
                     if command == "+":
@@ -150,12 +146,12 @@ def evaluate(z=None):
             return
         stop()
 def help(f=None):
-    w = Toplevel(win)
+    w = tkinter.Toplevel(win)
     w.withdraw()
     w.iconbitmap(script + "icon.ico")
     w.title("Help")
     w.resizable(0, 0)
-    Label(w, text="""Help:
+    tkinter.ttk.Label(w, text="""Help:
 1. Brainfuck
 +   : increase cell value
 -   : decrease cell value
@@ -181,20 +177,20 @@ ctrl-alt-s   : settings""").grid(column=0, row=0)
 
 def settings(a=None):
     global darkmode, keybind
-    w = Toplevel(win)
+    w = tkinter.Toplevel(win)
     w.withdraw()
     w.iconbitmap(script + "icon.ico")
     w.title("Settings")
     w.resizable(0, 0)
-    darkmode_btt = Radiobutton(w, text="Enable dark mode", variable=darkmode, value=True)
-    darkmode_btt_2 = Radiobutton(w, text="Disable dark mode", variable=darkmode, value=False)
+    darkmode_btt = tkinter.ttk.Radiobutton(w, text="Enable dark mode", variable=darkmode, value=True)
+    darkmode_btt_2 = tkinter.ttk.Radiobutton(w, text="Disable dark mode", variable=darkmode, value=False)
     darkmode_btt.grid(column=0, row=0)
     darkmode_btt_2.grid(column=0, row=1)
-    darkmode_btt = Radiobutton(w, text="Enable keybinds", variable=keybind, value=True)
-    darkmode_btt_2 = Radiobutton(w, text="Disable keybinds", variable=keybind, value=False)
+    darkmode_btt = tkinter.ttk.Radiobutton(w, text="Enable keybinds", variable=keybind, value=True)
+    darkmode_btt_2 = tkinter.ttk.Radiobutton(w, text="Disable keybinds", variable=keybind, value=False)
     darkmode_btt.grid(column=0, row=2)
     darkmode_btt_2.grid(column=0, row=3)
-    btt = Button(w, text="Apply", command=lambda: updatesettings(str(keybind.get()) + str(darkmode.get())))
+    btt = tkinter.ttk.Button(w, text="Apply", command=lambda: updatesettings(str(keybind.get()) + str(darkmode.get())))
     btt.grid(column=0, row=4)
     w.deiconify()
     w.mainloop()
@@ -246,9 +242,9 @@ def updatesettings(setting):
         output.configure(background="white", foreground="black")
         mode += "0"
 def clearcode(a=None):
-    codeinp.delete("1.0", END)
+    codeinp.delete("1.0", tkinter.END)
 def check():
-    if code_ != codeinp.get("1.0", END):
+    if code_ != codeinp.get("1.0", tkinter.END):
         if not win.title().endswith(" *"):
             win.title(win.title() + " *")
     else:
@@ -270,7 +266,7 @@ def StrToBrf(v):
   s += '<' * len(v) + '-]' + t + (len(v) - 1) * '<' + '[.>]'
   return s
 def texttobrainfuck(s=None):
-    w=Toplevel(win)
+    w=tkinter.Toplevel(win)
     w.title("Text to Brainfuck")
     w.iconbitmap(script + "icon.ico")
     text = ScrolledText(w, width=30, height=10)
@@ -281,14 +277,14 @@ def texttobrainfuck(s=None):
     def strtobrf(a):
         a = StrToBrf(a)
         out.config(state="normal")
-        out.delete("1.0", END)
-        out.insert(INSERT, a)
+        out.delete("1.0", tkinter.END)
+        out.insert(tkinter.INSERT, a)
         out.config(state="disabled")
-    btt = Button(w, text="Convert", width=41, command=lambda: strtobrf(text.get("1.0", END)[:-1]))
+    btt = tkinter.ttk.Button(w, text="Convert", width=41, command=lambda: strtobrf(text.get("1.0", tkinter.END)[:-1]))
     btt.grid(column=0, row=2)
     w.mainloop()
-keybind = IntVar(value=int(mode[0]))
-darkmode = IntVar(value=int(mode[1]))
+keybind = tkinter.IntVar(value=int(mode[0]))
+darkmode = tkinter.IntVar(value=int(mode[1]))
 codeinp = ScrolledText(width=200, height=30)
 codeinp.grid(column=0, row=0)
 inp = ScrolledText(width=200, height=1)
@@ -297,20 +293,20 @@ inp.configure(state="disabled")
 output = ScrolledText(width=200, height=15)
 output.grid(column=0, row=1)
 output.configure(state="disabled")
-menu = Menu(win)
+menu = tkinter.Menu(win)
 win.configure(menu=menu)
-file = Menu(menu, tearoff="off")
+file = tkinter.Menu(menu, tearoff="off")
 file.add_command(label="New", underline=0, command=new)
 file.add_command(label="Save", underline=0, command=lambda: save(1))
 file.add_command(label="Open...", underline=0, command=open_)
 file.add_command(label="Exit", underline=0, command=exit_)
-code = Menu(menu, tearoff="off")
+code = tkinter.Menu(menu, tearoff="off")
 code.add_command(label="Run", underline=0, command=evaluate)
 code.add_command(label="Stop", underline=0, command=stop)
 code.add_command(label="Clear console", underline=0, command=clear)
 menu.add_cascade(label="File", menu=file)
 menu.add_cascade(label="Code", menu=code)
-tools = Menu(menu, tearoff="off")
+tools = tkinter.Menu(menu, tearoff="off")
 tools.add_command(label="Help", underline=0, command=help)
 tools.add_command(label="Settings", underline=0, command=settings)
 tools.add_command(label="Text to Brainfuck", underline=0, command=texttobrainfuck)
@@ -326,14 +322,14 @@ win.bind_all("<Control-h>", help)
 win.bind_all("<Control-Alt-s>", settings)
 updatesettings(mode)
 win.protocol("WM_DELETE_WINDOW", exit_)
-if len(argv) > 1:
-    f_ = open(argv[1], "r")
-    codeinp.insert(INSERT, f_.read())
+if len(sys.argv) > 1:
+    f_ = open(sys.argv[1], "r")
+    codeinp.insert(tkinter.INSERT, f_.read())
     code_ = f_.read()
-    win.title("Brainfuck IDE Portable: " + argv[1])
+    win.title("Brainfuck IDE Portable: " + sys.argv[1])
     f_.close()
     saved = 1
-    fpath = argv[1]
+    fpath = sys.argv[1]
     save()
 win.deiconify()
 win.after(10, check)
