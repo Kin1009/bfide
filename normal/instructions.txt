@@ -1,6 +1,0 @@
-Installation:
-1. copy the bfide folder to "C:/Program Files"
-2. run install.reg
-Uninstalltion:
-1. delete the bfide folder from "C:/Program Files"
-2. run uninstall.reg
