@@ -8,23 +8,40 @@ The language consists of eight commands. A brainfuck program is a sequence of th
 - The eight language commands each consist of a single character:
 
 Character	Meaning
->	Increment the data pointer by one (to point to the next cell to the right).
-<	Decrement the data pointer by one (to point to the next cell to the left).
-+	Increment the byte at the data pointer by one.
--	Decrement the byte at the data pointer by one.
-.	Output the byte at the data pointer.
-,	Accept one byte of input, storing its value in the byte at the data pointer.
-[	If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command. (In this program, [ mark as a jump for ] so some programs (especially input programs) don't work)
-]	If the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.
-[ and ] match as parentheses usually do: each [ matches exactly one ] and vice versa, the [ comes first, and there can be no unmatched [ or ] between the two.
+
+">"	Increment the data pointer by one (to point to the next cell to the right).
+
+"<"	Decrement the data pointer by one (to point to the next cell to the left).
+
+"+"	Increment the byte at the data pointer by one.
+
+"-"	Decrement the byte at the data pointer by one.
+
+"."	Output the byte at the data pointer.
+
+","	Accept one byte of input, storing its value in the byte at the data pointer.
+
+"["	If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching "]" command. (In this program, "[" mark as a jump for "]" so some programs (especially input programs) don't work)
+
+"]"	If the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.
+
+"[" and ] match as parentheses usually do: each "[" matches exactly one "]" and vice versa, the "[ comes first, and there can be no unmatched "[" or "]" between the two.
+
 # Built-in Brainfuck code generator algorithm
 The generator here takes ord() of every character, then get the divisors of that number, take 1 / 2 middle divisors, then multiply them.
+
 Code for multiplying:
->x[<y>-]<.[-]
+
+">x[<y>-]<.[-]"
+
 Where x is "+"*x, y is "+"*y
+
 It is memory efficent (Use only 2 bytes for the whole program!) but that code don't work well with prime numbers (long code, still take 2 bytes of memory so don't worry).
 # Examples
 Hello, world!
->++++++++[<+++++++++>-]<.[-]>+[<+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>+++[<+++++++++++++++++++++++++++++++++++++>-]<.[-]>++++[<+++++++++++>-]<.[-]>++++[<++++++++>-]<.[-]>+++++++[<+++++++++++++++++>-]<.[-]>+++[<+++++++++++++++++++++++++++++++++++++>-]<.[-]>++++++[<+++++++++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>++++++++++[<++++++++++>-]<.[-]>+++[<+++++++++++>-]<.[-]
+
+">++++++++[<+++++++++>-]<.[-]>+[<+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>+++[<+++++++++++++++++++++++++++++++++++++>-]<.[-]>++++[<+++++++++++>-]<.[-]>++++[<++++++++>-]<.[-]>+++++++[<+++++++++++++++++>-]<.[-]>+++[<+++++++++++++++++++++++++++++++++++++>-]<.[-]>++++++[<+++++++++++++++++++>-]<.[-]>+++++++++[<++++++++++++>-]<.[-]>++++++++++[<++++++++++>-]<.[-]>+++[<+++++++++++>-]<.[-]"
+
 Notepad
-+[>,.<]
+
+"+[>,.<]"
